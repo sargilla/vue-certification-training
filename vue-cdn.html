@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CDN Try</title>
+</head>
+
+<body>
+  <div id="app">
+    {{ message }}
+    <div> <button @click="count++">
+        {{ count }}</button>
+    </div>
+    <pre>{{obj}}</pre>
+    <button @click="mutateDeeply">Mutate!</button>
+  </div>
+
+
+  <script type="module">
+    import {
+      createApp,
+      ref
+    } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+
+    createApp({
+      setup() {
+        const message = ref('Hello Vue!')
+        const count = ref(0)
+        const obj = ref({
+          nested: {
+            count: 0
+          },
+          arr: ['foo', 'bar'],
+        });
+
+        function mutateDeeply() {
+          // these will work as expected.
+          obj.value.nested.count++
+          obj.value.arr.push('baz')
+        }
+
+        return {
+          message,
+          count,
+          obj,
+          mutateDeeply
+        }
+      }
+    }).mount('#app')
+  </script>
+</body>
+
+</html>

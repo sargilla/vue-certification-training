@@ -1,0 +1,130 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.body-bg {
+    background-color: #111826;
+}
+.genre-bg {
+    background-color: #6466f1;
+}
+
+.movies {
+    @apply max-w-screen-xl mx-auto my-8 grid grid-cols-3 gap-4;
+}
+.movie-card {
+    @apply flex flex-col shadow-md rounded-lg items-stretch relative;
+}
+.movie-image {
+    @apply rounded-t-lg h-[520px] overflow-hidden w-full;
+}
+.movie-data {
+    @apply grow flex items-stretch flex-col bg-white rounded-b-lg p-4;
+}
+
+.movie-title {
+    @apply text-xl;
+}
+
+.movie-genre-pill-wrapper {
+    @apply mt-1 mb-3;
+}
+
+.movie-genre-pill {
+    @apply rounded-full genre-bg mr-2 text-white font-semibold text-sm px-2 py-1;
+}
+
+.movie-description {
+    @apply grow mb-3;
+}
+
+.rating-wrapper {
+    @apply flex items-center;
+}
+.rating-text {
+    @apply mr-2;
+}
+.star-icon {
+    @apply h-6 w-6;
+}
+.top-star-wrapper {
+    @apply absolute right-0 h-12 w-12;
+}
+.star-icon-big,
+.star-icon-number {
+    @apply absolute  h-12 w-12 flex justify-center items-center;
+}
+.star-icon-amber {
+    @apply text-yellow-500;
+}
+.star-icon-gray {
+    @apply text-gray-500;
+}
+.modal-wrapper {
+    @apply absolute inset-0 flex items-center justify-center z-20 bg-gray-800/40 backdrop-blur;
+}
+
+.modal-wrapper-inner {
+    @apply shrink-0 w-full max-w-2xl rounded-md flex flex-col overflow-hidden shadow-2xl bg-white dark:bg-gray-800 p-4 space-y-4 dark:text-white;
+}
+
+.movie-form-input-wrapper {
+    @apply flex flex-col items-start justify-start w-full mb-2;
+}
+
+.movie-form-input {
+    @apply w-full dark:bg-gray-900 rounded-md border-2;
+}
+
+.movie-form-textarea {
+    @apply w-full dark:bg-gray-900 h-24 rounded-md border-2;
+}
+
+.movie-form-checkbox {
+    @apply rounded-md focus:bg-pink-500/25 appearance-none checked:bg-pink-500 dark:bg-gray-900;
+}
+
+.movie-form-checkbox-label {
+    @apply flex items-center justify-start space-x-2;
+}
+
+.movie-form-actions-wrapper {
+    @apply flex items-center justify-between w-full;
+}
+
+.button {
+    @apply bg-gray-500 hover:bg-gray-400 p-2 rounded-md;
+}
+
+.button-primary {
+    @apply bg-cyan-500 hover:bg-cyan-400 p-2 rounded-md text-white;
+}
+
+.button-disabled {
+    @apply bg-gray-600 text-gray-400 cursor-not-allowed;
+}
+
+.movie-form-error {
+    @apply text-red-700 h-8;
+}
+
+.movie-actions-list-wrapper {
+    @apply flex items-center justify-between w-full max-w-7xl px-8;
+}
+
+.movie-actions-list-actions {
+    @apply flex items-center justify-between space-x-8;
+}
+
+.movie-actions-list-action-button {
+    @apply p-2 rounded-md text-sm self-end justify-self-end;
+}
+.crud-buttons {
+    @apply rounded-full bg-gray-400 hover:bg-red-600 p-1;
+}
+.crud-icons {
+    @apply text-gray-200 h-4 w-3;
+}
+.toolbar-buttons {
+    @apply ml-2 flex relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800;
+}
