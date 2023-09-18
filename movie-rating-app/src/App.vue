@@ -2,16 +2,12 @@
 import { computed, reactive, ref } from 'vue';
 
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue';
-import {
-    Bars3Icon,
-    PencilIcon,
-    PlusIcon,
-    StarIcon,
-    TrashIcon,
-    XMarkIcon,
-} from '@heroicons/vue/24/solid';
+import { Bars3Icon, PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid';
 
+import MovieItem from './MovieItem.vue';
 import { items } from './movies.json';
+
+const navigation = [{ name: 'Movies', href: '/', current: true }];
 
 const movies = reactive(items);
 const totalMovies = computed(() => movies.length);
@@ -21,10 +17,10 @@ const averageRating = computed(() =>
     ).toFixed(1)
 );
 
-const genres = ['Action', 'Crime', 'Drama', 'Animation', 'Sci-fi'];
 const showModal = ref(false);
 const isEdit = ref(false);
-const navigation = [{ name: 'Movies', href: '/', current: true }];
+const genres = ['Action', 'Crime', 'Drama', 'Animation', 'Sci-fi'];
+
 const form = reactive({
     id: '',
     name: '', // required
@@ -32,13 +28,15 @@ const form = reactive({
     image: '',
     genres: [], // required
     inTheaters: false,
+    rating: null,
 });
+const requiredFields = ['name', 'genres'];
 const errors = ref([]);
+
 const toggleModal = () => {
     showModal.value = showModal.value ? false : true;
 };
 
-const requiredFields = ['name', 'genres'];
 const formHasErrors = () => {
     errors.value = [];
     requiredFields.forEach((field) => {
@@ -53,7 +51,8 @@ const hasError = (field) => {
     return errors.value.includes(field);
 };
 const insertData = () => {
-    if (isEdit) {
+    // console.log(isEdit);
+    if (isEdit.value) {
         movies.map((m) => {
             if (m.id === form.id) {
                 m.id = form.id;
@@ -65,12 +64,25 @@ const insertData = () => {
             }
         });
     } else {
-        form.id = Number(Date.now());
-        movies.push(form);
+        let movieToAdd = {
+            id: Number(Date.now()),
+            name: form.name,
+            description: form.description,
+            image: form.image,
+            genres: form.genres,
+            inTheaters: form.inTheaters,
+            rating: null,
+        };
+        console.log(movieToAdd, { ...form });
+        // form.id = Number(Date.now());
+        // form.rating = null;
+        // console.log(form);
+        movies.push(movieToAdd);
     }
     clearModal();
 };
 const onSubmit = () => {
+    // console.log('has errors', formHasErrors());
     if (!formHasErrors()) insertData();
 };
 const clearForm = () => {
@@ -87,10 +99,11 @@ const clearModal = () => {
     isEdit.value = false;
     toggleModal();
 };
-const editMovie = (index) => {
+const editMovie = (movieId) => {
+    let movieToEdit = movies.find((m) => m.id == movieId);
+    console.log(movieToEdit);
     isEdit.value = true;
     clearForm();
-    let movieToEdit = movies[index];
     form.id = movieToEdit.id;
     form.name = movieToEdit.name;
     form.description = movieToEdit.description;
@@ -98,6 +111,14 @@ const editMovie = (index) => {
     form.genres = movieToEdit.genres;
     form.inTheaters = movieToEdit.inTheaters;
     if (showModal.value === false) toggleModal();
+};
+const deleteMovie = (movieId) => {
+    let index = movies.findIndex((m) => m.id == movieId);
+    if (index != -1) movies.splice(index, 1);
+};
+const updateRating = ({ id, star }) => {
+    let index = movies.findIndex((m) => m.id == id);
+    if (index != -1) movies[index].rating = star;
 };
 const resetRankings = () => {
     movies.map((m) => (m.rating = null));
@@ -198,78 +219,18 @@ const resetRankings = () => {
             </DisclosurePanel>
         </Disclosure>
         <div class="movies">
-            <div
-                v-for="(movie, index) in movies"
+            <MovieItem
+                v-for="movie in movies"
                 :key="movie.id"
-                class="movie-card group"
-            >
-                <div class="top-star-wrapper">
-                    <StarIcon
-                        class="star-icon-big"
-                        :class="[
-                            movie.rating ? 'star-icon-amber' : 'star-icon-gray',
-                        ]"
-                    />
-                    <p
-                        class="star-icon-number"
-                        v-text="movie.rating ?? '-'"
-                    ></p>
-                </div>
-                <img :src="movie.image" :alt="movie.name" class="movie-image" />
-                <div class="movie-data">
-                    <h1 class="movie-title">{{ movie.name }}</h1>
-                    <p class="movie-genre-pill-wrapper">
-                        <span
-                            class="movie-genre-pill"
-                            v-for="(genre, index) in movie.genres"
-                            :key="index"
-                            v-text="genre"
-                        />
-                    </p>
-                    <p class="movie-description" v-text="movie.description" />
-                    <div class="flex justify-between">
-                        <p class="rating-wrapper">
-                            <span class="rating-text">
-                                Rating: ({{ movie.rating }}/5)</span
-                            >
-                            <button
-                                v-for="star in 5"
-                                :key="star"
-                                @click="movie.rating = star"
-                                :disabled="star === movie.rating"
-                            >
-                                <StarIcon
-                                    class="star-icon"
-                                    :class="[
-                                        star <= movie.rating
-                                            ? 'star-icon-amber'
-                                            : 'star-icon-gray',
-                                    ]"
-                                />
-                            </button>
-                        </p>
-                        <p class="hidden group-hover:block">
-                            <button
-                                class="crud-buttons"
-                                @click="editMovie(index)"
-                            >
-                                <PencilIcon class="crud-icons" />
-                            </button>
-                            <button
-                                class="crud-buttons ml-2"
-                                @click="movies.splice(index, 1)"
-                            >
-                                <TrashIcon class="crud-icons" />
-                            </button>
-                        </p>
-                    </div>
-                </div>
-            </div>
+                :movie="movie"
+                @edit="editMovie"
+                @delete="deleteMovie"
+                @updateRating="updateRating"
+            />
         </div>
         <div class="modal-wrapper" v-if="showModal">
             <div class="modal-wrapper-inner">
                 <form @submit.prevent="onSubmit">
-                    <!-- <h1 class="text-xl text-center w-full">Create movie</h1> -->
                     <div class="movie-form-input-wrapper">
                         <label for="name">Name</label>
                         <input
