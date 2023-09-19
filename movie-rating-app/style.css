@@ -61,7 +61,7 @@
     @apply text-gray-500;
 }
 .modal-wrapper {
-    @apply absolute inset-0 flex items-center justify-center z-20 bg-gray-800/40 backdrop-blur;
+    @apply absolute inset-0 flex pt-8 items-start justify-center z-20 bg-gray-800/40 backdrop-blur;
 }
 
 .modal-wrapper-inner {

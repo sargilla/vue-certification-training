@@ -4,6 +4,8 @@ import { computed, reactive, ref } from 'vue';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue';
 import { Bars3Icon, PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid';
 
+import AppModal from './AppModal.vue';
+import MovieForm from './MovieForm.vue';
 import MovieItem from './MovieItem.vue';
 import { items } from './movies.json';
 
@@ -18,105 +20,45 @@ const averageRating = computed(() =>
 );
 
 const showModal = ref(false);
-const isEdit = ref(false);
-const genres = ['Action', 'Crime', 'Drama', 'Animation', 'Sci-fi'];
-
-const form = reactive({
-    id: '',
-    name: '', // required
-    description: '',
-    image: '',
-    genres: [], // required
-    inTheaters: false,
-    rating: null,
-});
-const requiredFields = ['name', 'genres'];
-const errors = ref([]);
 
 const toggleModal = () => {
     showModal.value = showModal.value ? false : true;
 };
 
-const formHasErrors = () => {
-    errors.value = [];
-    requiredFields.forEach((field) => {
-        let pass = form[field].length > 0;
-        if (!pass) {
-            errors.value.push(field);
-        }
-    });
-    return errors.value.length > 0;
-};
-const hasError = (field) => {
-    return errors.value.includes(field);
-};
-const insertData = () => {
-    // console.log(isEdit);
-    if (isEdit.value) {
-        movies.map((m) => {
-            if (m.id === form.id) {
-                m.id = form.id;
-                m.name = form.name;
-                m.description = form.description;
-                m.image = form.image;
-                m.genres = form.genres;
-                m.inTheaters = form.inTheaters;
-            }
-        });
-    } else {
-        let movieToAdd = {
-            id: Number(Date.now()),
-            name: form.name,
-            description: form.description,
-            image: form.image,
-            genres: form.genres,
-            inTheaters: form.inTheaters,
-            rating: null,
-        };
-        console.log(movieToAdd, { ...form });
-        // form.id = Number(Date.now());
-        // form.rating = null;
-        // console.log(form);
-        movies.push(movieToAdd);
-    }
-    clearModal();
-};
-const onSubmit = () => {
-    // console.log('has errors', formHasErrors());
-    if (!formHasErrors()) insertData();
-};
-const clearForm = () => {
-    form.id = null;
-    form.name = null;
-    form.description = null;
-    form.image = null;
-    form.genres = [];
-    form.inTheaters = false;
-    errors.value = [];
-};
-const clearModal = () => {
-    clearForm();
-    isEdit.value = false;
+const movieToEdit = ref(null);
+const createMovie = () => {
+    movieToEdit.value = null;
     toggleModal();
 };
 const editMovie = (movieId) => {
-    let movieToEdit = movies.find((m) => m.id == movieId);
-    console.log(movieToEdit);
-    isEdit.value = true;
-    clearForm();
-    form.id = movieToEdit.id;
-    form.name = movieToEdit.name;
-    form.description = movieToEdit.description;
-    form.image = movieToEdit.image;
-    form.genres = movieToEdit.genres;
-    form.inTheaters = movieToEdit.inTheaters;
+    movieToEdit.value = movies.find((m) => m.id == movieId);
     if (showModal.value === false) toggleModal();
 };
+
+const insertData = (movie) => {
+    const isNew = !movies.find((m) => m.id === movie.id);
+    if (isNew) {
+        movies.push({ ...movie });
+    } else {
+        movies.map((m) => {
+            if (m.id === movie.id) {
+                m.id = movie.id;
+                m.name = movie.name;
+                m.description = movie.description;
+                m.image = movie.image;
+                m.genres = movie.genres;
+                m.inTheaters = movie.inTheaters;
+            }
+        });
+    }
+    toggleModal();
+};
+
 const deleteMovie = (movieId) => {
     let index = movies.findIndex((m) => m.id == movieId);
     if (index != -1) movies.splice(index, 1);
 };
-const updateRating = ({ id, star }) => {
+const updateRating = (id, star) => {
     let index = movies.findIndex((m) => m.id == id);
     if (index != -1) movies[index].rating = star;
 };
@@ -186,7 +128,7 @@ const resetRankings = () => {
                             Reset Rankings
                         </button>
                         <button
-                            @click="toggleModal"
+                            @click="createMovie"
                             type="button"
                             class="toolbar-buttons"
                         >
@@ -225,96 +167,19 @@ const resetRankings = () => {
                 :movie="movie"
                 @edit="editMovie"
                 @delete="deleteMovie"
-                @updateRating="updateRating"
+                @update:rating="updateRating"
             />
         </div>
-        <div class="modal-wrapper" v-if="showModal">
-            <div class="modal-wrapper-inner">
-                <form @submit.prevent="onSubmit">
-                    <div class="movie-form-input-wrapper">
-                        <label for="name">Name</label>
-                        <input
-                            type="text"
-                            id="name"
-                            v-model="form.name"
-                            class="movie-form-input"
-                        />
-                        <div class="movie-form-error" v-if="hasError('name')">
-                            Debe ingresar un nombre
-                        </div>
-                    </div>
-                    <div class="movie-form-input-wrapper">
-                        <label for="description">Description</label>
-                        <textarea
-                            type="text"
-                            id="description"
-                            v-model="form.description"
-                            class="movie-form-textarea"
-                        />
-                    </div>
-                    <div class="movie-form-input-wrapper">
-                        <label for="image">Image</label>
-                        <input
-                            type="text"
-                            id="image"
-                            v-model="form.image"
-                            class="movie-form-input"
-                        />
-                    </div>
-                    <div class="movie-form-input-wrapper">
-                        <label for="genres">Genres</label>
-                        <select
-                            v-model="form.genres"
-                            id="genres"
-                            multiple
-                            class="movie-form-input"
-                        >
-                            <option
-                                v-for="(genre, index) in genres"
-                                :key="index"
-                                :value="genre"
-                            >
-                                {{ genre }}
-                            </option>
-                        </select>
-                        <div class="movie-form-error" v-if="hasError('genres')">
-                            Debe ingresar un genero
-                        </div>
-                    </div>
-                    <div class="movie-form-input-wrapper">
-                        <label
-                            for="inTheaters"
-                            class="movie-form-checkbox-label"
-                        >
-                            <input
-                                type="checkbox"
-                                id="inTheaters"
-                                v-model="form.inTheaters"
-                                class=""
-                                true-value="true"
-                                false-value="false"
-                            />
-                            <span> In Theaters? </span>
-                        </label>
-                    </div>
-                    <div class="movie-form-actions-wrapper">
-                        <input type="hidden" v-model="form.id" />
-                        <button
-                            type="button"
-                            class="button"
-                            @click="clearModal"
-                        >
-                            Cancel
-                        </button>
-
-                        <button
-                            type="submit"
-                            class="button-primary"
-                            v-text="isEdit ? 'Edit Movie' : 'Create'"
-                        ></button>
-                    </div>
-                </form>
-            </div>
-        </div>
+        <AppModal
+            @cancel="toggleModal"
+            v-if="showModal"
+            :title="movieToEdit?.id ? 'Edit Movie' : 'Add Movie'"
+        >
+            <MovieForm
+                @cancel="toggleModal"
+                :modelValue="movieToEdit"
+                @update:modelValue="insertData"
+            />
+        </AppModal>
     </div>
 </template>

@@ -4,10 +4,13 @@ import { computed } from 'vue';
 import { PencilIcon, StarIcon, TrashIcon } from '@heroicons/vue/24/solid';
 
 const props = defineProps(['movie']);
-// const emits = defineEmits(['edit', 'delete', 'update-rating']);
+const emit = defineEmits(['edit', 'delete', 'update:rating']);
 const unRated = computed(() => {
     return props.movie.rating < 1;
 });
+const updateRating = (star) => {
+    emit('update:rating', props.movie.id, star);
+};
 </script>
 
 <template>
@@ -15,9 +18,9 @@ const unRated = computed(() => {
         <div class="top-star-wrapper">
             <StarIcon
                 class="star-icon-big"
-                :class="[unRated ? 'star-icon-amber' : 'star-icon-gray']"
+                :class="[unRated ? 'star-icon-gray' : 'star-icon-amber']"
             />
-            <p class="star-icon-number" v-text="unRated ?? '-'"></p>
+            <p class="star-icon-number" v-text="movie.rating ?? '-'"></p>
         </div>
         <img :src="movie.image" :alt="movie.name" class="movie-image" />
         <div class="movie-data">
@@ -39,7 +42,7 @@ const unRated = computed(() => {
                     <button
                         v-for="star in 5"
                         :key="star"
-                        @click="$emit('updateRating', { id: movie.id, star })"
+                        @click="updateRating(star)"
                         :disabled="star === movie.rating"
                     >
                         <StarIcon
