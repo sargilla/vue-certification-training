@@ -4,18 +4,9 @@ import { computed, onMounted, ref } from 'vue';
 import { items } from '@/movies.json';
 import MovieStarRating from '@/MovieStarRating.vue';
 
-// Right now we're just displaying the info for the first movie
-// You should get the id from the URL and display the info for the proper movie
-// 💡 HINT: You do NOT need to modifiy the template
 const props = defineProps({ id: Number });
 
 const movies = ref(items);
-onMounted(() => {
-    console.log(
-        movies.value,
-        movies.value.find((m) => m.id === props.id)
-    );
-});
 const movie = computed(() => movies.value.find((m) => m.id === props.id));
 </script>
 <template>
