@@ -1,7 +1,14 @@
 <script setup>
 import { computed } from 'vue';
 
-import { PencilIcon, StarIcon, TrashIcon } from '@heroicons/vue/24/solid';
+import { RouterLink } from 'vue-router';
+
+import {
+    EyeIcon,
+    PencilIcon,
+    StarIcon,
+    TrashIcon,
+} from '@heroicons/vue/24/solid';
 
 const props = defineProps(['movie']);
 const emit = defineEmits(['edit', 'delete', 'update:rating']);
@@ -68,6 +75,12 @@ const updateRating = (star) => {
                     >
                         <TrashIcon class="crud-icons" />
                     </button>
+                    <RouterLink
+                        :to="{ name: 'movie', params: { id: movie.id } }"
+                        ><button class="crud-buttons ml-2">
+                            <EyeIcon class="crud-icons" aria-hidden="true" />
+                        </button>
+                    </RouterLink>
                 </p>
             </div>
         </div>
