@@ -170,12 +170,14 @@ const resetRankings = () => {
                 @update:rating="updateRating"
             />
         </div>
+
         <AppModal
             @cancel="toggleModal"
-            v-if="showModal"
+            :show="showModal"
             :title="movieToEdit?.id ? 'Edit Movie' : 'Add Movie'"
         >
             <MovieForm
+                v-if="showModal"
                 @cancel="toggleModal"
                 :modelValue="movieToEdit"
                 @update:modelValue="insertData"

@@ -5,6 +5,7 @@
             <input
                 type="text"
                 id="name"
+                ref="nameInput"
                 v-model="form.name"
                 class="movie-form-input"
             />
@@ -77,7 +78,7 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 
 const props = defineProps({
     modelValue: { type: Object, default: null },
@@ -87,6 +88,9 @@ const errors = ref([]);
 const isEdit = ref(false);
 const requiredFields = ['name', 'genres'];
 const genres = ['Action', 'Crime', 'Drama', 'Animation', 'Sci-fi'];
+
+const nameInput = ref();
+onMounted(() => nameInput.value.focus());
 
 const form = reactive({
     id: props.modelValue?.id || '',

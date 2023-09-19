@@ -88,6 +88,32 @@ Simply declare them under the _-enter-active and _-leave-active classe
 <Transition type="animation">...</Transition>
 ```
 
+## Nested Transitions and Explicit Transition Durations
+
+```html
+<Transition name="nested">
+    <div v-if="show" class="outer">
+        <div class="inner">Hello</div>
+    </div>
+</Transition>
+```
+
+```css
+/* rules that target nested elements */
+.nested-enter-active .inner,
+.nested-leave-active .inner {
+    transition: all 0.3s ease-in-out;
+}
+
+.nested-enter-from .inner,
+.nested-leave-to .inner {
+    transform: translateX(30px);
+    opacity: 0;
+}
+
+/* ... other necessary CSS omitted */
+```
+
 ## Transition duration
 
 ```html
