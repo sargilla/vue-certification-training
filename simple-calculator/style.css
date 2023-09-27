@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.screen {
+    @apply mb-2 p-3 rounded-lg bg-teal-600 text-right shadow-lg;
+}
+.keyboard {
+    @apply grid grid-cols-4 gap-2 font-mono text-white text-sm text-center font-bold leading-6;
+}
+.keyboard button,
+.keyboard div {
+    @apply px-4 py-2 rounded-lg shadow-lg bg-slate-800;
+}

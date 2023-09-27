@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.board {
+    border: 1px solid black;
+    @apply mt-3;
+}
+.board button {
+    border: 1px solid black;
+    @apply text-center h-8;
+}
+.red {
+    @apply text-red-500;
+}
+.green {
+    @apply text-green-500;
+}
+.button-primary {
+    @apply bg-green-500 hover:bg-green-400 p-1 rounded-md text-white;
+}
