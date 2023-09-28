@@ -20,7 +20,6 @@ const hours = ref(0);
 const minutes = ref(0);
 const seconds = ref(0);
 onMounted(() => {
-    // console.log(new Date('2024/01/01'));
     countDownDate();
     setInterval(countDownDate, 1000);
 });

@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+aside {
+    background-color: #1c3670;
+    @apply p-2 text-white;
+}
+main {
+    background-image: url('/bg.jpg');
+    background-size: cover;
+}
+.title {
+    @apply text-xl font-semibold;
+}
+
+.fish-name {
+    @apply text-center text-white rounded;
+    background: #000000aa;
+    text-align: center;
+}
