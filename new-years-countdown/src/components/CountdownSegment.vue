@@ -4,6 +4,7 @@ defineProps({
     number: Number,
 });
 </script>
+
 <template>
     <div class="segment">
         <div class="number-wrapper">
